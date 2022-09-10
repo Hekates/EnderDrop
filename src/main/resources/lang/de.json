@@ -1,0 +1,6 @@
+{
+  "language" : "Deutsch",
+  "language.console.loaded" : "Die Sprache %s wurde geladen",
+
+  "command.error.no_player" : "Dieser Command kann nur als Spieler ausgeführt werden."
+}

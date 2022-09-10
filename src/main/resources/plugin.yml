@@ -1,0 +1,4 @@
+name: EnderDrop
+version: '${project.version}'
+main: ch.hekates.enderdrop.Main
+api-version: 1.19
