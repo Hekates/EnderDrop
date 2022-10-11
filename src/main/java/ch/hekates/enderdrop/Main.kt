@@ -1,28 +1,31 @@
 package ch.hekates.enderdrop
 
-import ch.hekates.enderdrop.language.LangLoader
-import ch.hekates.enderdrop.language.Text
+import ch.hekates.languify.Languify
+import ch.hekates.languify.language.LangLoader
+import ch.hekates.languify.language.Text
+import org.bukkit.ChatColor
 import org.bukkit.plugin.java.JavaPlugin
-import java.util.logging.Logger
 
 class Main : JavaPlugin() {
-    private var plugin: Main? = null
-    public final val PREFIX = "ED"
+    companion object{
+        lateinit var plugin: Main
+        private set
+    }
+
+    val prefix = "${ChatColor.BOLD}${ChatColor.LIGHT_PURPLE}E${ChatColor.BLUE}D ${ChatColor.GRAY}>>"
 
     override fun onEnable() {
         saveDefaultConfig()
         plugin = this;
 
         //Language setup
+        Languify.setup(plugin, plugin.dataFolder.toString(), prefix)
         val languageID = config.getString("language")
         LangLoader.loadLanguage(languageID)
         val language = Text.get("language")
-        logger.info(language?.let { Text.get("language.console.loaded").replace("%s", it) })
+        logger.info(Text.get("language.console.loaded").replace("%s", language))
 
 
 
-    }
-    fun getPlugin(): Main? {
-        return plugin
     }
 }

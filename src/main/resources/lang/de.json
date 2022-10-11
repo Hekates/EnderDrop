@@ -2,5 +2,11 @@
   "language" : "Deutsch",
   "language.console.loaded" : "Die Sprache %s wurde geladen",
 
-  "command.error.no_player" : "Dieser Command kann nur als Spieler ausgeführt werden."
+  "command.error.no_player" : "Dieser Command kann nur als Spieler ausgeführt werden.",
+  "command.error.no_permission" : "Dir fehlt die Permission: %permission. Melde dich bei einem Staff Mitglied, falls du diese Permission haben solltest.",
+  "command.error.self_delivery" : "Du kannst dir selbst kein Item überreichen!",
+  "command.error.no_item_in_hand" : "Du hast kein Item in der Hand!",
+
+  "command.delivered" : "Du hast %player erfolgreich %amount %item über %enderdrop gesendet!",
+  "command.recieved" : "Du hast erfolgreich %amount %item über %enderdrop von %player erhalten!"
 }
