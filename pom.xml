@@ -134,7 +134,7 @@
         <dependency>
             <groupId>com.github.Hekates</groupId>
             <artifactId>Languify</artifactId>
-            <version>v1.0-beta</version>
+            <version>v1.1-beta</version>
         </dependency>
     </dependencies>
 </project>

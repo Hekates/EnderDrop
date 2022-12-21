@@ -1,5 +1,5 @@
 name: EnderDrop
-version: '${project.version}'
+version: 'Alpha 0.1'
 main: ch.hekates.enderdrop.Main
 api-version: 1.19
 description: A plugin to easily transfer Items between players.

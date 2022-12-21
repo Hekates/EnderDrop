@@ -9,7 +9,7 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
-import java.util.*
+import kotlin.collections.HashMap
 
 
 class EnderDropCommand : CommandExecutor {
@@ -22,7 +22,7 @@ class EnderDropCommand : CommandExecutor {
             return true
         }
         val player = sender
-        if (!player.hasPermission("hup.enderdrop")) {
+        if (!player.hasPermission("enderdrop")) {
             player.sendMessage(
                 prefix + ChatColor.RED + Text.get("command.error.no_permission", false)
                     .replace("%permission", "${ChatColor.BOLD}hup.enderdrop${ChatColor.RESET}${ChatColor.RED}")
@@ -43,38 +43,46 @@ class EnderDropCommand : CommandExecutor {
                     player.sendMessage(Text.get("command.error.self_delivery"))
                     return true
                 }
+
                 if (transferItem.type == Material.AIR) {    //if the player isn't holding anything
                     player.sendMessage(prefix + ChatColor.RED + Text.get("command.error.no_item_in_hand", false))
                     return true
                 }
+
                 if (target!!.inventory.firstEmpty() != -1) {    //if the target has a free slot
+
+                    val deliveredMap =  mapOf<String, String>(
+                        "%player" to "${ChatColor.YELLOW}${target.name}${ChatColor.RESET} ${ChatColor.GRAY}",
+                        "%amount" to "${ChatColor.YELLOW}${transferAmount}${ChatColor.RESET} ${ChatColor.GRAY}",
+                        "%item" to "${ChatColor.YELLOW}${name}${ChatColor.RESET} ${ChatColor.GRAY}",
+                        "%enderdrop" to enderDropText
+                    ) as HashMap<String, String>
+
+                    val recievedMap = mapOf<String, String>(
+                        "%transferamount" to "§e§l$transferAmount",
+                        "%itemname" to "$name§r§7",
+                        "%enderdrop" to enderDropText,
+                        "%sender" to "§e${player.name}§7"
+                    ) as HashMap<String, String>
+
+
                     target.inventory.addItem(transferItem)
                     player.inventory.remove(transferItem)
-                    player.sendMessage(
-                        Text.get("command.delivered")
-                            .replace("%player", "${ChatColor.YELLOW}${target.name}${ChatColor.RESET} ${ChatColor.GRAY}")
-                            .replace("%amount", "${ChatColor.YELLOW}${transferAmount}${ChatColor.RESET} ${ChatColor.GRAY}")
-                            .replace("%item", "${ChatColor.YELLOW}${name}${ChatColor.RESET} ${ChatColor.GRAY}")
-                            .replace("%enderdrop", enderDropText)
-                    )
-                    target.sendMessage(
-                        Text.get("command.recieved")
-                            .replace("%transferamount".toRegex(), "§e§l$transferAmount")
-                            .replace("%itemname".toRegex(), "$name§r§7")
-                            .replace("%enderdrop".toRegex(), enderDropText)
-                            .replace("%sender".toRegex(), "§e" + player.name + "§7")
-                    )
+
+                    player.sendMessage( Text.get("command.delivered", deliveredMap))
+                    target.sendMessage(Text.get("command.recieved", recievedMap))
                 } else {
-                    player.sendMessage(
-                        prefix + "§cDu kannst dem Spieler: §e§l"
-                                + args[0] + " §ckein Item übergeben, da dieser keinen freien Slot im Inventar hat!"
-                    )
+                    player.sendMessage(prefix + ChatColor.RED +
+                            Text.get("command.error.other.no_slot", false)
+                                .replace("%player", "§e§l${args[0]}§c"))
                 }
             } else {
-                player.sendMessage(prefix + "§cDer Spieler: §e§l" + args[0] + " §cist nicht online oder existiert nicht!")
+                player.sendMessage(prefix + ChatColor.RED +
+                        Text.get("command.error.other.offline", false)
+                            .replace("%player", "§e§l${args[0]}§c"))
             }
         } else {
-            player.sendMessage("$prefix§cDu musst eine Person angeben, der du das Item überreichen willst!")
+            player.sendMessage(Text.get("command.error.other.no"))
             return true
         }
         return false

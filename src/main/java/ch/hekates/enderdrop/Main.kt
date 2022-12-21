@@ -7,12 +7,7 @@ import org.bukkit.ChatColor
 import org.bukkit.plugin.java.JavaPlugin
 
 class Main : JavaPlugin() {
-    companion object{
-        lateinit var plugin: Main
-        private set
-    }
-
-    val prefix = "${ChatColor.BOLD}${ChatColor.LIGHT_PURPLE}E${ChatColor.BLUE}D ${ChatColor.GRAY}>>"
+    val prefix = "${ChatColor.BOLD}${ChatColor.LIGHT_PURPLE}E${ChatColor.BLUE}D ${ChatColor.DARK_GRAY}>> ${ChatColor.GRAY}"
 
     override fun onEnable() {
         saveDefaultConfig()
@@ -27,5 +22,9 @@ class Main : JavaPlugin() {
 
 
 
+    }
+        companion object{
+        lateinit var plugin: Main
+        private set
     }
 }
