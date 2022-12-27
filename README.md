@@ -1,6 +1,6 @@
 <img src="/img/EnderDrop.png">
 
-<h3> Version: pre-alpha 0.1<h3>
+<h3> Version: alpha 1.0<h3>
 
 ![GitHub Repo stars](https://img.shields.io/github/stars/Hekates/EnderDrop?style=for-the-badge)
 ![GitHub](https://img.shields.io/github/license/Hekates/OreBan?style=for-the-badge)
