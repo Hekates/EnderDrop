@@ -22,10 +22,10 @@ class EnderDropCommand : CommandExecutor {
             return true
         }
         val player = sender
-        if (!player.hasPermission("enderdrop")) {
+        if (!player.hasPermission("enderdrop.use")) {
             player.sendMessage(
                 prefix + ChatColor.RED + Text.get("command.error.no_permission", false)
-                    .replace("%permission", "${ChatColor.BOLD}hup.enderdrop${ChatColor.RESET}${ChatColor.RED}")
+                    .replace("%permission", "${ChatColor.BOLD}enderdrop.use${ChatColor.RESET}${ChatColor.RED}")
             )
             return true
         }
@@ -33,8 +33,9 @@ class EnderDropCommand : CommandExecutor {
             if (Bukkit.getPlayer(args[0]) != null) {    //if the player exists
                 val target = Bukkit.getPlayer(args[0])
                 val transferAmount = player.inventory.itemInMainHand.amount
-                val transferItem = ItemStack(player.inventory.itemInMainHand.type, transferAmount)
+                val transferItem = player.inventory.itemInMainHand
                 val name = transferItem.type.name.replace("_", " ").uppercase()
+                val slot = player.inventory.heldItemSlot
 
                 val enderDropText = "${ChatColor.RESET}${ChatColor.LIGHT_PURPLE}${ChatColor.BOLD}Ender${ChatColor.BLUE}Drop${ChatColor.RESET}${ChatColor.GRAY}"
                 val variableFormat = ""
@@ -52,22 +53,22 @@ class EnderDropCommand : CommandExecutor {
                 if (target!!.inventory.firstEmpty() != -1) {    //if the target has a free slot
 
                     val deliveredMap =  mapOf<String, String>(
-                        "%player" to "${ChatColor.YELLOW}${target.name}${ChatColor.RESET} ${ChatColor.GRAY}",
-                        "%amount" to "${ChatColor.YELLOW}${transferAmount}${ChatColor.RESET} ${ChatColor.GRAY}",
+                        "%player" to "${ChatColor.YELLOW}${target.name}${ChatColor.RESET}${ChatColor.GRAY}",
+                        "%amount" to "${ChatColor.YELLOW}${transferAmount}${ChatColor.RESET}${ChatColor.GRAY}",
                         "%item" to "${ChatColor.YELLOW}${name}${ChatColor.RESET} ${ChatColor.GRAY}",
                         "%enderdrop" to enderDropText
                     ) as HashMap<String, String>
 
                     val recievedMap = mapOf<String, String>(
-                        "%transferamount" to "§e§l$transferAmount",
-                        "%itemname" to "$name§r§7",
+                        "%amount" to "§e§l$transferAmount",
+                        "%item" to "$name§r§7",
                         "%enderdrop" to enderDropText,
-                        "%sender" to "§e${player.name}§7"
+                        "%player" to "§e${player.name}§7"
                     ) as HashMap<String, String>
 
 
+                    player.inventory.clear(slot)
                     target.inventory.addItem(transferItem)
-                    player.inventory.remove(transferItem)
 
                     player.sendMessage( Text.get("command.delivered", deliveredMap))
                     target.sendMessage(Text.get("command.recieved", recievedMap))
@@ -85,6 +86,6 @@ class EnderDropCommand : CommandExecutor {
             player.sendMessage(Text.get("command.error.other.no"))
             return true
         }
-        return false
+        return true
     }
 }

@@ -7,7 +7,7 @@ import org.bukkit.ChatColor
 import org.bukkit.plugin.java.JavaPlugin
 
 class Main : JavaPlugin() {
-    val prefix = "${ChatColor.BOLD}${ChatColor.LIGHT_PURPLE}E${ChatColor.BLUE}D ${ChatColor.DARK_GRAY}>> ${ChatColor.GRAY}"
+    val prefix = "${ChatColor.BOLD}${ChatColor.LIGHT_PURPLE}E${ChatColor.BLUE}D${ChatColor.DARK_GRAY} >> ${ChatColor.GRAY}"
 
     override fun onEnable() {
         saveDefaultConfig()
@@ -20,8 +20,8 @@ class Main : JavaPlugin() {
         val language = Text.get("language")
         logger.info(Text.get("language.console.loaded").replace("%s", language))
 
-
-
+        //Register commands
+        getCommand("enderdrop")?.setExecutor(EnderDropCommand())
     }
         companion object{
         lateinit var plugin: Main
