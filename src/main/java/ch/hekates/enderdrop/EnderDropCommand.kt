@@ -16,54 +16,63 @@ class EnderDropCommand : CommandExecutor {
     val config = Main.plugin.config
     val prefix = Main.plugin.prefix
 
+    val bold = ChatColor.BOLD
+    val reset = ChatColor.RESET
+    val red = ChatColor.RED
+    val purple = ChatColor.LIGHT_PURPLE
+    val gray = ChatColor.GRAY
+    val yellow = ChatColor.YELLOW
+
     override fun onCommand(sender: CommandSender, cmd: Command, label: String, args: Array<String>): Boolean {
         if (sender !is Player) {
             sender.sendMessage(prefix + ChatColor.RED + Text.get("command.error.no_player"))
             return true
         }
+
         val player = sender
         if (!player.hasPermission("enderdrop.use")) {
             player.sendMessage(
                 prefix + ChatColor.RED + Text.get("command.error.no_permission", false)
-                    .replace("%permission", "${ChatColor.BOLD}enderdrop.use${ChatColor.RESET}${ChatColor.RED}")
+                    .replace("%permission", "$bold enderdrop.use$reset$red")
             )
             return true
         }
-        if (args.size > 0) {    //if the player targets another player
+        //"/enderdrop target"
+        if (args.isNotEmpty()) {    //if the player targets another player
             if (Bukkit.getPlayer(args[0]) != null) {    //if the player exists
                 val target = Bukkit.getPlayer(args[0])
                 val transferAmount = player.inventory.itemInMainHand.amount
-                val transferItem = player.inventory.itemInMainHand
+                val transferItem = player.inventory.itemInMainHand  // -> ItemStack
                 val name = transferItem.type.name.replace("_", " ").uppercase()
                 val slot = player.inventory.heldItemSlot
 
-                val enderDropText = "${ChatColor.RESET}${ChatColor.LIGHT_PURPLE}${ChatColor.BOLD}Ender${ChatColor.BLUE}Drop${ChatColor.RESET}${ChatColor.GRAY}"
-                val variableFormat = ""
+                val enderDropText = "$reset$purple$bold Ender$bold Drop$reset$gray"
+                val variableFormat = "" // ?
 
                 if (target == player) {
-                    player.sendMessage(Text.get("command.error.self_delivery"))
+                    player.sendMessage(prefix + red + Text.get("command.error.self_delivery", false))
                     return true
                 }
 
                 if (transferItem.type == Material.AIR) {    //if the player isn't holding anything
-                    player.sendMessage(prefix + ChatColor.RED + Text.get("command.error.no_item_in_hand", false))
+                    player.sendMessage(prefix + red + Text.get("command.error.no_item_in_hand", false))
                     return true
                 }
 
                 if (target!!.inventory.firstEmpty() != -1) {    //if the target has a free slot
 
-                    val deliveredMap =  mapOf<String, String>(
-                        "%player" to "${ChatColor.YELLOW}${target.name}${ChatColor.RESET}${ChatColor.GRAY}",
-                        "%amount" to "${ChatColor.YELLOW}${transferAmount}${ChatColor.RESET}${ChatColor.GRAY}",
-                        "%item" to "${ChatColor.YELLOW}${name}${ChatColor.RESET} ${ChatColor.GRAY}",
+                    val deliveredMap = mapOf<String, String>(
+                        "%player" to "yellow${target.name}$reset$gray",
+                        "%amount" to "$yellow$transferAmount$reset$gray",
+                        "%item" to "$yellow$name$reset$gray",
                         "%enderdrop" to enderDropText
                     ) as HashMap<String, String>
 
                     val recievedMap = mapOf<String, String>(
-                        "%amount" to "§e§l$transferAmount",
-                        "%item" to "$name§r§7",
+                        "%amount" to "$yellow$transferAmount$reset$gray",
+                        "%item" to "$yellow$name$reset$gray",
                         "%enderdrop" to enderDropText,
-                        "%player" to "§e${player.name}§7"
+                        "%player" to "$yellow${player.name}$reset$gray"
                     ) as HashMap<String, String>
 
 
@@ -72,17 +81,17 @@ class EnderDropCommand : CommandExecutor {
 
                     player.sendMessage( Text.get("command.delivered", deliveredMap))
                     target.sendMessage(Text.get("command.recieved", recievedMap))
-                } else {
-                    player.sendMessage(prefix + ChatColor.RED +
+                } else { // target has no free slot
+                    player.sendMessage(prefix + red +
                             Text.get("command.error.other.no_slot", false)
-                                .replace("%player", "§e§l${args[0]}§c"))
+                                .replace("%player", "$yellow${args[0]}$red"))
                 }
-            } else {
-                player.sendMessage(prefix + ChatColor.RED +
+            } else { // can't reach target
+                player.sendMessage(prefix + red +
                         Text.get("command.error.other.offline", false)
-                            .replace("%player", "§e§l${args[0]}§c"))
+                            .replace("%player", "$yellow${args[0]}$red"))
             }
-        } else {
+        } else { // no target specified
             player.sendMessage(Text.get("command.error.other.no"))
             return true
         }
